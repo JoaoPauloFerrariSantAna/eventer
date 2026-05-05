@@ -1,6 +1,0 @@
-@EventContext_HostAddress = http://localhost:5159
-
-GET {{EventContext_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
