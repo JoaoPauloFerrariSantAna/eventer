@@ -22,12 +22,12 @@ namespace Eventer.Contexts.EventContext.Controllers
         }
 
         [HttpPost]
-        public void Post(CreateEventRequest request)
+        public void Post([FromBody] CreateEventRequest request)
         {
         }
 
         [HttpPut]
-        public IActionResult Update(UpdateEventRequest request)
+        public IActionResult Update([FromBody] UpdateEventRequest request)
         {
             try { _updateCase.Execute(request); }
             catch (Exception e) { return BadRequest(e.Message); }
