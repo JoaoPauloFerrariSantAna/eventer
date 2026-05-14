@@ -5,7 +5,8 @@ namespace Eventer.Contexts.EventContext.Interfaces
 {
     public interface IEventRepository
     {
-        public Event FindById(int Id);
+        public bool IsInDatabase(int id);
+        public Event FindById(int id);
         public void Update(UpdateEventRequest updateEvent);
     }
 }
