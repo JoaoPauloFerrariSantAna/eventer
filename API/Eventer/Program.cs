@@ -17,6 +17,8 @@ void AddToContainer(WebApplicationBuilder b)
     b.Services.AddScoped<EventUpdateCase>();
     b.Services.AddScoped<EventDeleteCase>();
     b.Services.AddScoped<EventCreateCase>();
+    b.Services.AddScoped<EventGetAllCase>();
+    b.Services.AddScoped<EventGetByIdCase>();
 }
 
 void ConfigureRequestPipeline(WebApplication app)
@@ -28,6 +30,8 @@ void ConfigureRequestPipeline(WebApplication app)
     }
 
     app.UseHttpsRedirection();
+
+    app.MapControllers();
 }
 
 var builder = WebApplication.CreateBuilder(args);

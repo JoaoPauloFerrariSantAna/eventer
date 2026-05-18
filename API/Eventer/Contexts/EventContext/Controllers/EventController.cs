@@ -17,12 +17,35 @@ namespace Eventer.Contexts.EventContext.Controllers
         private readonly EventUpdateCase _updateCase;
         private readonly EventDeleteCase _deleteCase;
         private readonly EventCreateCase _createCase;
+        private readonly EventGetAllCase _getAllCase;
+        private readonly EventGetByIdCase _getByIdCase;
 
-        public EventController(EventUpdateCase updateCase, EventDeleteCase deleteCase, EventCreateCase createCase)
+        public EventController(
+            EventUpdateCase updateCase,
+            EventDeleteCase deleteCase,
+            EventCreateCase createCase,
+            EventGetAllCase getAllCase,
+            EventGetByIdCase getByIdCase)
         {
             _updateCase = updateCase;
             _deleteCase = deleteCase;
             _createCase = createCase;
+            _getAllCase = getAllCase;
+            _getByIdCase = getByIdCase;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            try { return Ok(_getAllCase.Execute()); }
+            catch (Exception e) { return BadRequest(e.Message); }
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            try { return Ok(_getByIdCase.Execute(id)); }
+            catch (Exception e) { return BadRequest(e.Message); }
         }
 
         [HttpPost]
