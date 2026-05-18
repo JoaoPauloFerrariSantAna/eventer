@@ -8,5 +8,6 @@ namespace Eventer.Contexts.EventContext.Interfaces
         public bool IsInDatabase(int id);
         public Event FindById(int id);
         public void Update(UpdateEventRequest updateEvent);
+        public void Add(Event eventEntity);
     }
 }

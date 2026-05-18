@@ -15,15 +15,21 @@ namespace Eventer.Contexts.EventContext.Controllers
     public class EventController : ControllerBase
     {
         private readonly EventUpdateCase _updateCase;
+        private readonly EventCreateCase _createCase;
 
-        public EventController(EventUpdateCase updateCase)
+        public EventController(EventUpdateCase updateCase, EventCreateCase createCase)
         {
             _updateCase = updateCase;
+            _createCase = createCase;
         }
 
         [HttpPost]
-        public void Post([FromBody] CreateEventRequest request)
+        public IActionResult Post([FromBody] CreateEventRequest request)
         {
+            try { _createCase.Execute(request); }
+            catch (Exception e) { return BadRequest(e.Message); }
+
+            return Ok();
         }
 
         [HttpPut]

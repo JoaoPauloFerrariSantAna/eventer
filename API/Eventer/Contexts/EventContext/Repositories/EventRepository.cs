@@ -1,44 +1,75 @@
-﻿using Eventer.Contexts.EventContext.DTOs.Requests;
+using Eventer.Contexts.EventContext.DTOs.Requests;
 using Eventer.Contexts.EventContext.Entities;
 using Eventer.Contexts.EventContext.Interfaces;
+using Eventer.Database;
+using Schema = Eventer.Database.Schemas;
 
 namespace Eventer.Contexts.EventContext.Repositories
 {
     public class EventRepository : IEventRepository
     {
-        // NOTE: placeholder while there is no DB yet
-        private static List<Event> _events = new List<Event>();
+        private readonly AppDbContext _context;
+
+        public EventRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public bool IsInDatabase(int id)
         {
-            return (_events.Find(e => e.Id == id) != null);
+            return _context.Events.Any(e => e.Id == id);
         }
 
         public Event FindById(int id)
         {
-            if (!IsInDatabase(id)) throw new Exception("could not find event!");
+            var eventSchema = _context.Events.FirstOrDefault(e => e.Id == id);
+            if (eventSchema == null) throw new Exception("could not find event!");
 
-            return _events.Find(e => e.Id == id);
+            return new Event
+            {
+                Id = eventSchema.Id,
+                Name = eventSchema.Name,
+                Description = eventSchema.Description,
+                Price = eventSchema.Price,
+                Capacity = eventSchema.Capacity,
+                Date = eventSchema.Date,
+                Location = eventSchema.Location
+            };
         }
 
         public void Update(UpdateEventRequest updateEvent)
         {
-            for (int i = 0; i < _events.Count; i++)
+            var eventSchema = _context.Events.FirstOrDefault(e => e.Id == updateEvent.Id);
+            if (eventSchema == null) throw new Exception("could not find event!");
+
+            eventSchema.Name = updateEvent.Name;
+            eventSchema.Description = updateEvent.Description;
+            eventSchema.Price = updateEvent.Price;
+            eventSchema.Capacity = updateEvent.Capacity;
+            eventSchema.Date = updateEvent.Date;
+            eventSchema.Location = updateEvent.Location;
+
+            _context.SaveChanges();
+        }
+
+        public void Add(Event eventEntity)
+        {
+            var eventSchema = new Schema.Event
             {
-                if (_events[i].Id == updateEvent.Id)
-                {
-                    _events[i] = new Event 
-                        { 
-                            Name = updateEvent.Name, 
-                            Description = updateEvent.Description, 
-                            Date = updateEvent.Date, 
-                            Capacity = updateEvent.Capacity, 
-                            Location = updateEvent.Location, 
-                            Price = updateEvent.Price
-                        };
-                    break;
-                }
-            }
+                Name = eventEntity.Name,
+                Description = eventEntity.Description,
+                Price = eventEntity.Price,
+                Capacity = eventEntity.Capacity,
+                Date = eventEntity.Date,
+                Location = eventEntity.Location
+            };
+
+            _context.Events.Add(eventSchema);
+            _context.SaveChanges();
+
+            // Update the entity with the new ID
+            eventEntity.Id = eventSchema.Id;
         }
     }
 }
+

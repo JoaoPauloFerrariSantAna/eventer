@@ -1,13 +1,21 @@
 using Eventer.Contexts.EventContext.DTOs.Requests;
 using Eventer.Contexts.EventContext.Interfaces;
 using Eventer.Contexts.EventContext.Repositories;
+using Eventer.Contexts.EventContext.UseCases;
+using Eventer.Database;
+using Microsoft.EntityFrameworkCore;
 
 void AddToContainer(WebApplicationBuilder b)
 {
     b.Services.AddOpenApi();
     b.Services.AddControllers();
-    b.Services.AddScoped<UpdateEventRequest>();
+    
+    b.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlite(b.Configuration.GetConnectionString("DefaultConnection")));
+
     b.Services.AddScoped<IEventRepository, EventRepository>();
+    b.Services.AddScoped<EventUpdateCase>();
+    b.Services.AddScoped<EventCreateCase>();
 }
 
 void ConfigureRequestPipeline(WebApplication app)
