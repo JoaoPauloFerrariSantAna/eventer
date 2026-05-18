@@ -70,6 +70,14 @@ namespace Eventer.Contexts.EventContext.Repositories
             // Update the entity with the new ID
             eventEntity.Id = eventSchema.Id;
         }
+
+        public void Delete(int id)
+        {
+            var existing = _events.Find(e => e.Id == id);
+            if (existing == null) throw new Exception("could not find event to delete!");
+
+            _events.Remove(existing);
+        }
     }
 }
 

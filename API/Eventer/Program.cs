@@ -15,6 +15,7 @@ void AddToContainer(WebApplicationBuilder b)
 
     b.Services.AddScoped<IEventRepository, EventRepository>();
     b.Services.AddScoped<EventUpdateCase>();
+    b.Services.AddScoped<EventDeleteCase>();
     b.Services.AddScoped<EventCreateCase>();
 }
 

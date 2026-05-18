@@ -15,11 +15,13 @@ namespace Eventer.Contexts.EventContext.Controllers
     public class EventController : ControllerBase
     {
         private readonly EventUpdateCase _updateCase;
+        private readonly EventDeleteCase _deleteCase;
         private readonly EventCreateCase _createCase;
 
-        public EventController(EventUpdateCase updateCase, EventCreateCase createCase)
+        public EventController(EventUpdateCase updateCase, EventDeleteCase deleteCase, EventCreateCase createCase)
         {
             _updateCase = updateCase;
+            _deleteCase = deleteCase;
             _createCase = createCase;
         }
 
@@ -42,8 +44,12 @@ namespace Eventer.Contexts.EventContext.Controllers
         }
 
         [HttpDelete]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            try { _deleteCase.Execute(id); }
+            catch (Exception e) { return BadRequest(e.Message); }
+
+            return Ok();
         }
     }
 }
