@@ -30,6 +30,8 @@ void ConfigureRequestPipeline(WebApplication app)
     }
 
     app.UseHttpsRedirection();
+
+    app.MapControllers();
 }
 
 var builder = WebApplication.CreateBuilder(args);
