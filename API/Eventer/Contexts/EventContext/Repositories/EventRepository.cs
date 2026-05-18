@@ -40,5 +40,13 @@ namespace Eventer.Contexts.EventContext.Repositories
                 }
             }
         }
+
+        public void Delete(int id)
+        {
+            var existing = _events.Find(e => e.Id == id);
+            if (existing == null) throw new Exception("could not find event to delete!");
+
+            _events.Remove(existing);
+        }
     }
 }

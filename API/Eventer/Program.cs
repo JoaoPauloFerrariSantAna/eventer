@@ -1,12 +1,15 @@
 using Eventer.Contexts.EventContext.DTOs.Requests;
 using Eventer.Contexts.EventContext.Interfaces;
 using Eventer.Contexts.EventContext.Repositories;
+using Eventer.Contexts.EventContext.UseCases;
 
 void AddToContainer(WebApplicationBuilder b)
 {
     b.Services.AddOpenApi();
     b.Services.AddControllers();
     b.Services.AddScoped<UpdateEventRequest>();
+    b.Services.AddScoped<EventUpdateCase>();
+    b.Services.AddScoped<EventDeleteCase>();
     b.Services.AddScoped<IEventRepository, EventRepository>();
 }
 
