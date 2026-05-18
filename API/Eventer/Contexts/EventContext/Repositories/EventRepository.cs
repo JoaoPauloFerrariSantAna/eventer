@@ -37,6 +37,20 @@ namespace Eventer.Contexts.EventContext.Repositories
             };
         }
 
+        public List<Event> GetAll()
+        {
+            return _context.Events.Select(e => new Event
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                Price = e.Price,
+                Capacity = e.Capacity,
+                Date = e.Date,
+                Location = e.Location
+            }).ToList();
+        }
+
         public void Update(UpdateEventRequest updateEvent)
         {
             var eventSchema = _context.Events.FirstOrDefault(e => e.Id == updateEvent.Id);
