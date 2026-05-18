@@ -1,7 +1,13 @@
+using Eventer.Contexts.EventContext.DTOs.Requests;
+using Eventer.Contexts.EventContext.Interfaces;
+using Eventer.Contexts.EventContext.Repositories;
+
 void AddToContainer(WebApplicationBuilder b)
 {
     b.Services.AddOpenApi();
     b.Services.AddControllers();
+    b.Services.AddScoped<UpdateEventRequest>();
+    b.Services.AddScoped<IEventRepository, EventRepository>();
 }
 
 void ConfigureRequestPipeline(WebApplication app)
