@@ -70,42 +70,6 @@ namespace Eventer.Contexts.OrderContext.Repositories
             _context.SaveChanges();
         }
 
-        public void PayOrder(int orderId)
-        {
-            var orderSchema = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-            if (orderSchema == null) throw new Exception("could not find order!");
-            if (orderSchema.ConfirmedAt != null) throw new Exception("order already confirmed!");
-
-            var ticket = new Schema.Ticket
-            {
-                EventId = orderSchema.EventId,
-                Code = Guid.NewGuid().ToString()
-            };
-
-            _context.Tickets.Add(ticket);
-            _context.SaveChanges();
-
-            orderSchema.TicketId = ticket.Id;
-            orderSchema.ConfirmedAt = DateTime.UtcNow;
-            _context.SaveChanges();
-        }
-
-        public void CancelOrder(int orderId)
-        {
-            var orderSchema = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-            if (orderSchema == null) throw new Exception("could not find order!");
-
-            if (orderSchema.TicketId != null)
-            {
-                var ticket = _context.Tickets.FirstOrDefault(t => t.Id == orderSchema.TicketId);
-                if (ticket != null)
-                {
-                    _context.Tickets.Remove(ticket);
-                }
-            }
-
-            _context.Orders.Remove(orderSchema);
-            _context.SaveChanges();
-        }
+       
     }
 }

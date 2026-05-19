@@ -13,7 +13,7 @@ namespace Eventer.Contexts.OrderContext.UseCases
 
         public void Execute(int id)
         {
-            if (!_orderRepository.IsInDatabase(id)) throw new Exception("could not find order!");
+            // TODO
         }
     }
 }

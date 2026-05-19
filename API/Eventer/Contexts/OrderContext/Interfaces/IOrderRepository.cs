@@ -10,7 +10,5 @@ namespace Eventer.Contexts.OrderContext.Interfaces
         public List<Order> GetAll();
         public void Add(Order orderEntity);
         public void Delete(int id);
-        public void PayOrder(int orderId);
-        public void CancelOrder(int orderId);
     }
 }
