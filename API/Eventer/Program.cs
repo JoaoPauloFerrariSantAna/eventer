@@ -2,6 +2,9 @@ using Eventer.Contexts.EventContext.DTOs.Requests;
 using Eventer.Contexts.EventContext.Interfaces;
 using Eventer.Contexts.EventContext.Repositories;
 using Eventer.Contexts.EventContext.UseCases;
+using Eventer.Contexts.OrderContext.Interfaces;
+using Eventer.Contexts.OrderContext.Repositories;
+using Eventer.Contexts.OrderContext.UseCases;
 using Eventer.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +22,14 @@ void AddToContainer(WebApplicationBuilder b)
     b.Services.AddScoped<EventCreateCase>();
     b.Services.AddScoped<EventGetAllCase>();
     b.Services.AddScoped<EventGetByIdCase>();
+
+    b.Services.AddScoped<IOrderRepository, OrderRepository>();
+    b.Services.AddScoped<OrderDeleteCase>();
+    b.Services.AddScoped<OrderCreateCase>();
+    b.Services.AddScoped<OrderGetAllCase>();
+    b.Services.AddScoped<OrderGetByIdCase>();
+    b.Services.AddScoped<OrderPayCase>();
+    b.Services.AddScoped<OrderCancelCase>();
 }
 
 void ConfigureRequestPipeline(WebApplication app)

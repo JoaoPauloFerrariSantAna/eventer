@@ -1,0 +1,111 @@
+using Eventer.Contexts.OrderContext.Entities;
+using Eventer.Contexts.OrderContext.Interfaces;
+using Eventer.Database;
+using Schema = Eventer.Database.Schemas;
+
+namespace Eventer.Contexts.OrderContext.Repositories
+{
+    public class OrderRepository : IOrderRepository
+    {
+        private readonly AppDbContext _context;
+
+        public OrderRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public bool IsInDatabase(int id)
+        {
+            return _context.Orders.Any(o => o.Id == id);
+        }
+
+        public Order FindById(int id)
+        {
+            var orderSchema = _context.Orders.FirstOrDefault(o => o.Id == id);
+            if (orderSchema == null) throw new Exception("could not find order!");
+
+            return new Order
+            {
+                Id = orderSchema.Id,
+                EventId = orderSchema.EventId,
+                TicketId = orderSchema.TicketId,
+                CreatedAt = orderSchema.CreatedAt,
+                ConfirmedAt = orderSchema.ConfirmedAt
+            };
+        }
+
+        public List<Order> GetAll()
+        {
+            return _context.Orders.Select(o => new Order
+            {
+                Id = o.Id,
+                EventId = o.EventId,
+                TicketId = o.TicketId,
+                CreatedAt = o.CreatedAt,
+                ConfirmedAt = o.ConfirmedAt
+            }).ToList();
+        }
+
+        public void Add(Order orderEntity)
+        {
+            var orderSchema = new Schema.Order
+            {
+                EventId = orderEntity.EventId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Orders.Add(orderSchema);
+            _context.SaveChanges();
+
+            orderEntity.Id = orderSchema.Id;
+            orderEntity.CreatedAt = orderSchema.CreatedAt;
+        }
+
+        public void Delete(int id)
+        {
+            var existing = _context.Orders.FirstOrDefault(o => o.Id == id);
+            if (existing == null) throw new Exception("could not find order to delete!");
+
+            _context.Orders.Remove(existing);
+            _context.SaveChanges();
+        }
+
+        public void PayOrder(int orderId)
+        {
+            var orderSchema = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+            if (orderSchema == null) throw new Exception("could not find order!");
+            if (orderSchema.ConfirmedAt != null) throw new Exception("order already confirmed!");
+
+            var ticket = new Schema.Ticket
+            {
+                EventId = orderSchema.EventId,
+                Code = Guid.NewGuid().ToString()
+            };
+
+            _context.Tickets.Add(ticket);
+            _context.SaveChanges();
+
+            orderSchema.TicketId = ticket.Id;
+            orderSchema.ConfirmedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+        }
+
+        public void CancelOrder(int orderId)
+        {
+            var orderSchema = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+            if (orderSchema == null) throw new Exception("could not find order!");
+
+            if (orderSchema.TicketId != null)
+            {
+                var ticket = _context.Tickets.FirstOrDefault(t => t.Id == orderSchema.TicketId);
+                if (ticket != null)
+                {
+                    _context.Tickets.Remove(ticket);
+                }
+            }
+
+            _context.Orders.Remove(orderSchema);
+            _context.SaveChanges();
+        }
+    }
+}
